@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mery Estetik | Reçete Takip Sistemi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+:root{
+  --plum:#8a1458;
+  --plum-dark:#5c0a3a;
+  --plum-soft:#fff0f7;
+  --teal:#009b8e;
+  --teal-dark:#00796f;
+  --teal-soft:#e8faf8;
+  --orange:#f59e0b;
+  --purple:#7c3aed;
+  --green:#059669;
+  --red:#e11d48;
+  --ink:#182033;
+  --muted:#667085;
+  --border:#e8eaf0;
+  --page:#f6f7fb;
+  --card:#fff;
+  --shadow:0 22px 60px rgba(16,24,40,.08);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 92% 2%, rgba(138,20,88,.16), transparent 28%),
+    radial-gradient(circle at 2% 10%, rgba(0,155,142,.16), transparent 26%),
+    var(--page);
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+a{text-decoration:none}
+.login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+}
+.login-wrap{
+  width:1080px;
+  min-height:610px;
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.85);
+  border-radius:34px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.login-hero{
+  position:relative;
+  padding:48px;
+  background:linear-gradient(135deg,var(--plum-dark),var(--plum));
+  color:#fff;
+}
+.login-hero:after{
+  content:"";
+  position:absolute;
+  width:520px;height:520px;border-radius:50%;
+  right:-210px;top:-160px;
+  background:rgba(255,255,255,.12);
+}
+.logo-white{
+  width:250px;
+  background:#fff;
+  border-radius:18px;
+  padding:14px 18px;
+  position:relative;
+  z-index:1;
+}
+.login-hero h1{font-size:48px;line-height:1.03;margin:70px 0 18px;position:relative;z-index:1}
+.login-hero p{font-size:18px;line-height:1.7;color:rgba(255,255,255,.82);position:relative;z-index:1}
+.hero-pills{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px;position:relative;z-index:1}
+.hero-pills span{background:rgba(255,255,255,.13);padding:11px 14px;border-radius:999px;font-size:14px}
+.login-card{padding:54px;display:flex;flex-direction:column;justify-content:center}
+.login-card h2{font-size:30px;margin:0 0 8px}
+.login-card p{margin:0 0 26px;color:var(--muted)}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:13px;font-weight:700;margin:0 0 8px}
+.field input,.field select,.field textarea{
+  width:100%;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:15px;
+  padding:14px 15px;
+  outline:none;
+  transition:.2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--teal);
+  box-shadow:0 0 0 4px rgba(0,155,142,.1);
+}
+.primary{
+  background:linear-gradient(135deg,var(--plum),var(--teal));
+  color:#fff;
+  border-radius:15px;
+  padding:14px 18px;
+  font-weight:800;
+  box-shadow:0 12px 22px rgba(138,20,88,.2);
+}
+.secondary{
+  background:#fff;
+  color:var(--ink);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px 15px;
+  font-weight:800;
+}
+.teal-btn{background:var(--teal);color:#fff;border-radius:14px;padding:12px 15px;font-weight:800}
+.mini-note{text-align:center;color:var(--muted);font-size:13px;margin-top:18px}
+.app{display:none;min-height:100vh}
+.sidebar{
+  position:fixed;inset:18px auto 18px 18px;
+  width:280px;
+  background:linear-gradient(180deg,var(--plum-dark),var(--plum));
+  color:#fff;
+  border-radius:28px;
+  padding:22px;
+  box-shadow:0 24px 54px rgba(92,10,58,.28);
+}
+.side-logo{
+  background:#fff;
+  border-radius:18px;
+  padding:12px;
+  margin-bottom:20px;
+}
+.side-logo img{width:100%;display:block}
+.nav{display:grid;gap:7px}
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 14px;
+  color:#fff;
+  background:transparent;
+  border-radius:15px;
+  font-weight:700;
+  text-align:left;
+}
+.nav button.active,.nav button:hover{background:rgba(255,255,255,.15)}
+.nav i{
+  width:31px;height:31px;border-radius:10px;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.14);
+  font-style:normal;
+}
+.profile{
+  position:absolute;left:22px;right:22px;bottom:22px;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;
+  padding:14px;
+  display:flex;gap:12px;align-items:center;
+}
+.avatar{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,#fff,#fbcfe8);
+  display:grid;place-items:center;
+  color:var(--plum);font-weight:900;
+}
+.profile b{display:block}.profile small{color:rgba(255,255,255,.72)}
+.main{margin-left:318px;padding:24px 28px 28px}
+.topbar{
+  height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:18px;
+}
+.topbar h1{margin:0;font-size:28px}
+.topbar p{margin:5px 0 0;color:var(--muted)}
+.top-actions{display:flex;gap:10px;align-items:center}
+.search{
+  display:flex;align-items:center;gap:10px;
+  background:#fff;border:1px solid var(--border);
+  border-radius:16px;padding:0 14px;width:310px;
+}
+.search input{border:0;outline:0;padding:13px 0;width:100%}
+.page{display:none}.page.active{display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.card{
+  background:rgba(255,255,255,.9);
+  border:1px solid rgba(232,234,240,.95);
+  border-radius:24px;
+  box-shadow:0 12px 36px rgba(16,24,40,.05);
+}
+.stat{padding:18px;display:flex;gap:15px;align-items:center}
+.icon{
+  width:54px;height:54px;border-radius:18px;
+  display:grid;place-items:center;font-size:23px;font-weight:900
+}
+.ico-teal{background:var(--teal-soft);color:var(--teal)}
+.ico-plum{background:var(--plum-soft);color:var(--plum)}
+.ico-orange{background:#fff7ed;color:var(--orange)}
+.ico-purple{background:#f3e8ff;color:var(--purple)}
+.stat small{color:var(--muted);font-weight:700}.stat b{display:block;font-size:31px;margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:16px}
+.card-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.card-head h3{margin:0;font-size:17px}
+.card-body{padding:18px 20px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:13px 10px;border-bottom:1px solid var(--border);text-align:left;font-size:14px;vertical-align:middle}
+.table th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.patient-cell b{display:block}.patient-cell small{color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800}
+.b-green{background:#dcfce7;color:#047857}
+.b-orange{background:#ffedd5;color:#c2410c}
+.b-pink{background:#fce7f3;color:var(--plum)}
+.b-purple{background:#f3e8ff;color:#6d28d9}
+.b-gray{background:#f3f4f6;color:#4b5563}
+.action-row{display:flex;gap:7px;flex-wrap:wrap}
+.small-btn{padding:8px 10px;border-radius:11px;font-size:12px;font-weight:800}
+.wa{background:#dcfce7;color:#047857}
+.call{background:#e0f2fe;color:#0369a1}
+.done{background:#f3f4f6;color:#111827}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.form-grid .wide{grid-column:span 2}
+.form-grid .full{grid-column:1/-1}
+textarea{min-height:92px;resize:vertical}
+.segment{
+  display:flex;gap:8px;flex-wrap:wrap;
+  background:#fff;border:1px solid var(--border);border-radius:18px;padding:8px
+}
+.segment button{background:transparent;border-radius:12px;padding:10px 12px;font-weight:800;color:var(--muted)}
+.segment button.active{background:var(--plum);color:#fff}
+.timeline{display:grid;gap:10px}
+.timeline-item{
+  display:grid;grid-template-columns:95px 1fr auto;
+  gap:12px;align-items:center;
+  padding:13px;border:1px solid var(--border);
+  border-radius:16px;background:#fff
+}
+.timeline-date{font-weight:900;color:var(--plum)}
+.chart-bars{display:grid;gap:12px}
+.bar-row{display:grid;grid-template-columns:135px 1fr 44px;gap:10px;align-items:center}
+.bar{height:11px;background:#f1f5f9;border-radius:999px;overflow:hidden}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--plum),var(--teal));border-radius:999px}
+.footer-strip{
+  margin-top:16px;
+  background:linear-gradient(135deg,var(--plum-dark),var(--plum));
+  color:#fff;
+  border-radius:22px;
+  padding:16px 20px;
+  display:flex;justify-content:space-between;align-items:center
+}
+@media(max-width:1100px){
+  .stats,.grid-2,.form-grid{grid-template-columns:1fr}
+  .form-grid .wide{grid-column:auto}
+  .sidebar{position:relative;inset:auto;width:auto;margin:16px}
+  .profile{position:static;margin-top:18px}
+  .main{margin-left:0;padding:16px}
+  .login-wrap{grid-template-columns:1fr}
+  .login-hero{display:none}
+  .search{display:none}
+}
+</style>
+</head>
+<body>
+<section class="login-screen" id="login">
+  <div class="login-wrap">
+    <div class="login-hero">
+      <img src="logo.png" class="logo-white" alt="Mery Estetik">
+      <h1>Hasta görüşmeleri artık kaybolmasın.</h1>
+      <p>Görüşme sonrası reçete, işlem önerisi, takip tarihi, WhatsApp hatırlatma ve kayıp nedeni analizi tek panelde.</p>
+      <div class="hero-pills">
+        <span>✓ 2 gün takip</span><span>✓ 1 hafta takip</span><span>✓ 1 ay takip</span><span>✓ Danışman raporu</span>
+      </div>
+    </div>
+    <div class="login-card">
+      <h2>Panele Giriş</h2>
+      <p>Mery Estetik Reçete Takip Sistemi</p>
+      <div class="field"><label>Kullanıcı Adı</label><input id="loginUser" value="admin"></div>
+      <div class="field"><label>Şifre</label><input id="loginPass" type="password" value="1234"></div>
+      <button class="primary" onclick="login()">Giriş Yap</button>
+      <div class="mini-note">Demo giriş: admin / 1234</div>
+    </div>
+  </div>
+</section>
+
+<section class="app" id="app">
+  <aside class="sidebar">
+    <div class="side-logo"><img src="logo.png" alt="Mery Estetik"></div>
+    <div class="nav">
+      <button class="active" onclick="go('dashboard',this)"><i>⌂</i> Ana Sayfa</button>
+      <button onclick="go('newPatient',this)"><i>＋</i> Yeni Görüşme</button>
+      <button onclick="go('patients',this)"><i>☷</i> Hasta Listesi</button>
+      <button onclick="go('followups',this)"><i>◷</i> Takip Takvimi</button>
+      <button onclick="go('reports',this)"><i>↗</i> Raporlar</button>
+      <button onclick="go('settings',this)"><i>⚙</i> Ayarlar</button>
+    </div>
+    <div class="profile">
+      <div class="avatar">MD</div>
+      <div><b>Mery Danışman</b><small>Çevrimiçi</small></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">Ana Sayfa</h1>
+        <p id="pageSub">Görüşme, reçete ve hasta takip yönetimi</p>
+      </div>
+      <div class="top-actions">
+        <div class="search">⌕ <input id="globalSearch" placeholder="Hasta, işlem veya telefon ara..." onkeyup="renderAll()"></div>
+        <button class="secondary" onclick="exportCSV()">Excel / CSV</button>
+        <button class="teal-btn" onclick="go('newPatient')">+ Yeni Görüşme</button>
+      </div>
+    </div>
+
+    <section id="dashboard" class="page active">
+      <div class="stats">
+        <div class="card stat"><div class="icon ico-teal">👥</div><div><small>Bugünkü Görüşme</small><b id="stToday">0</b></div></div>
+        <div class="card stat"><div class="icon ico-plum">📅</div><div><small>Takipteki Hastalar</small><b id="stFollow">0</b></div></div>
+        <div class="card stat"><div class="icon ico-orange">⏱</div><div><small>Bugün Aranacak</small><b id="stDue">0</b></div></div>
+        <div class="card stat"><div class="icon ico-purple">✓</div><div><small>Randevuya Dönen</small><b id="stAppt">0</b></div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>Bugünkü Takip Takvimi</h3><button class="secondary" onclick="go('followups')">Tümünü Gör</button></div>
+          <div class="card-body"><div class="timeline" id="todayList"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Görüşme Sonuç Dağılımı</h3><span class="badge b-gray">Canlı Demo</span></div>
+          <div class="card-body">
+            <div class="chart-bars" id="resultBars"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Son Görüşmeler</h3><button class="secondary" onclick="go('patients')">Hasta Listesi</button></div>
+        <div class="card-body">
+          <table class="table">
+            <thead><tr><th>Hasta</th><th>İşlem</th><th>Görüşme Tarihi</th><th>Danışman</th><th>Durum</th><th>Aksiyon</th></tr></thead>
+            <tbody id="recentRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="newPatient" class="page">
+      <div class="card">
+        <div class="card-head"><h3>Yeni Görüşme Kaydı</h3><span class="badge b-pink">Otomatik takip oluşturur</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field"><label>Ad Soyad</label><input id="name" placeholder="Hasta adı soyadı"></div>
+            <div class="field"><label>Telefon</label><input id="phone" placeholder="905xxxxxxxxx"></div>
+            <div class="field"><label>Yaş</label><input id="age" type="number" placeholder="35"></div>
+            <div class="field"><label>Cinsiyet</label><select id="gender"><option>Kadın</option><option>Erkek</option><option>Belirtmek istemiyor</option></select></div>
+            <div class="field"><label>Geliş Kanalı</label><select id="source"><option>Instagram</option><option>WhatsApp</option><option>Google</option><option>Referans</option><option>Web Sitesi</option><option>Mevcut Hasta</option></select></div>
+            <div class="field"><label>Danışman</label><input id="consultant" value="Mery Danışman"></div>
+            <div class="field wide"><label>İlgilendiği İşlem</label><input id="treatment" placeholder="Botoks, Endolift, Lazer Epilasyon..."></div>
+            <div class="field"><label>Verilen Fiyat</label><input id="price" placeholder="Örn: 8.000 TL"></div>
+            <div class="field full"><label>Önerilen İşlem / Reçete</label><textarea id="rx" placeholder="Önerilen işlem, seans planı, bakım önerisi..."></textarea></div>
+            <div class="field full"><label>Görüşme Notu</label><textarea id="note" placeholder="Hastanın beklentisi, çekincesi, ödeme durumu, özel notlar..."></textarea></div>
+            <div class="field"><label>Hasta Durumu</label><select id="status"><option>Düşünüyor</option><option>Takipte</option><option>Randevu aldı</option><option>İşlem yaptırdı</option><option>Fiyat yüksek geldi</option><option>Bilgi eksikliği</option><option>Güven oluşmadı</option><option>Ulaşılamadı</option></select></div>
+            <div class="field"><label>İşlem Yaptırmama Nedeni</label><select id="lostReason"><option>Henüz belli değil</option><option>Fiyat yüksek geldi</option><option>Yeterli bilgi alamadı</option><option>Güven oluşmadı</option><option>Ailesine/eşine danışacak</option><option>Başka klinikle kıyaslıyor</option><option>Zamanı uygun değil</option><option>Kampanya bekliyor</option></select></div>
+          </div>
+          <button class="primary" onclick="addPatient()">Kaydet ve 2/7/30 Gün Takip Oluştur</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="patients" class="page">
+      <div class="card">
+        <div class="card-head"><h3>Hasta Listesi</h3><div class="segment"><button class="active" onclick="setFilter('all',this)">Tümü</button><button onclick="setFilter('Randevu aldı',this)">Randevu</button><button onclick="setFilter('Fiyat yüksek geldi',this)">Fiyat</button><button onclick="setFilter('Bilgi eksikliği',this)">Bilgi</button></div></div>
+        <div class="card-body">
+          <table class="table">
+            <thead><tr><th>Hasta</th><th>İşlem</th><th>Kanal</th><th>Danışman</th><th>Durum</th><th>Aksiyon</th></tr></thead>
+            <tbody id="patientRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="followups" class="page">
+      <div class="card">
+        <div class="card-head"><h3>Takip Takvimi</h3><span class="badge b-orange">Geciken ve bugün yapılacaklar üstte</span></div>
+        <div class="card-body">
+          <table class="table">
+            <thead><tr><th>Takip Tarihi</th><th>Hasta</th><th>Takip Türü</th><th>İşlem</th><th>Durum</th><th>Aksiyon</th></tr></thead>
+            <tbody id="followRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="reports" class="page">
+      <div class="stats">
+        <div class="card stat"><div class="icon ico-teal">#</div><div><small>Toplam Görüşme</small><b id="rpTotal">0</b></div></div>
+        <div class="card stat"><div class="icon ico-purple">%</div><div><small>Dönüş Oranı</small><b id="rpRate">0%</b></div></div>
+        <div class="card stat"><div class="icon ico-orange">₺</div><div><small>Fiyat İtirazı</small><b id="rpPrice">0</b></div></div>
+        <div class="card stat"><div class="icon ico-plum">?</div><div><small>Bilgi Eksikliği</small><b id="rpInfo">0</b></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card"><div class="card-head"><h3>Kayıp Nedenleri</h3></div><div class="card-body"><div class="chart-bars" id="lostBars"></div></div></div>
+        <div class="card"><div class="card-head"><h3>En Çok Talep Edilen İşlemler</h3></div><div class="card-body"><div class="chart-bars" id="treatmentBars"></div></div></div>
+      </div>
+    </section>
+
+    <section id="settings" class="page">
+      <div class="card">
+        <div class="card-head"><h3>Ayarlar</h3></div>
+        <div class="card-body">
+          <p><b>Demo sürüm:</b> Veriler tarayıcı içinde saklanır. Gerçek kullanımda veritabanı, personel yetkilendirme, KVKK güvenliği, yedekleme ve sunucu kurulumu gerekir.</p>
+          <button class="secondary" onclick="resetDemo()">Demo Verilerini Sıfırla</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-strip">
+      <span>🔒 Güvenli • Hızlı • Kolay Kullanım</span>
+      <span>Mery Estetik Reçete Takip Sistemi</span>
+    </div>
+  </main>
+</section>
+
+<script>
+let activeFilter='all';
+let patients = JSON.parse(localStorage.getItem('meryProPatients') || '[]');
+
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function addDays(n){let d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function login(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+  seed();
+  renderAll();
+}
+function go(id,btn){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const names={dashboard:['Ana Sayfa','Görüşme, reçete ve hasta takip yönetimi'],newPatient:['Yeni Görüşme','Hasta bilgisi, reçete ve takip planı oluştur'],patients:['Hasta Listesi','Tüm görüşmeler ve hasta durumları'],followups:['Takip Takvimi','2 gün, 1 hafta ve 1 ay takip görevleri'],reports:['Raporlar','Dönüş oranı ve kayıp nedeni analizi'],settings:['Ayarlar','Demo ve sistem ayarları']};
+  document.getElementById('pageTitle').innerText=names[id][0];
+  document.getElementById('pageSub').innerText=names[id][1];
+  renderAll();
+}
+function val(id){return document.getElementById(id).value}
+function save(){localStorage.setItem('meryProPatients',JSON.stringify(patients))}
+function addPatient(){
+  let p={
+    id:Date.now(), name:val('name'), phone:val('phone'), age:val('age'), gender:val('gender'),
+    source:val('source'), consultant:val('consultant'), treatment:val('treatment'), price:val('price'),
+    rx:val('rx'), note:val('note'), status:val('status'), lostReason:val('lostReason'),
+    date:todayISO(),
+    follows:[{date:addDays(2),type:'2 gün sonra takip',done:false},{date:addDays(7),type:'1 hafta sonra takip',done:false},{date:addDays(30),type:'1 ay sonra takip',done:false}]
+  };
+  if(!p.name || !p.phone){alert('Ad soyad ve telefon zorunlu.');return}
+  patients.unshift(p); save();
+  ['name','phone','age','treatment','price','rx','note'].forEach(id=>document.getElementById(id).value='');
+  go('patients'); renderAll();
+}
+function badge(s){
+  let c='b-gray';
+  if(s.includes('Randevu')||s.includes('İşlem')) c='b-green';
+  else if(s.includes('Fiyat')) c='b-orange';
+  else if(s.includes('Bilgi')||s.includes('Güven')) c='b-pink';
+  else if(s.includes('Takip')) c='b-purple';
+  return `<span class="badge ${c}">${s}</span>`;
+}
+function message(type){
+  if(type.includes('2')) return 'Merhabalar, Mery Estetik’te yaptığımız görüşme sonrası size ulaşmak istedik. İşlem planınızla ilgili aklınıza takılan bir konu olursa memnuniyetle yardımcı olabiliriz.';
+  if(type.includes('hafta')) return 'Merhabalar, daha önce görüştüğümüz işlem planınızla ilgili süreci hatırlatmak istedik. Uygun olmanız halinde size özel planlamayı tekrar değerlendirebiliriz.';
+  return 'Merhabalar, Mery Estetik olarak daha önce görüştüğümüz işlemle ilgili sizi tekrar bilgilendirmek istedik. Dilerseniz güncel durumunuzu yeniden değerlendirip size uygun süreci planlayabiliriz.';
+}
+function openWA(id,type){
+  let p=patients.find(x=>x.id===id);
+  window.open(`https://wa.me/${p.phone}?text=${encodeURIComponent(message(type))}`,'_blank');
+}
+function markDone(id,i){patients.find(x=>x.id===id).follows[i].done=true;save();renderAll()}
+function setStatus(id,s){patients.find(x=>x.id===id).status=s;save();renderAll()}
+function setFilter(f,btn){activeFilter=f;document.querySelectorAll('.segment button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderAll()}
+function allFollows(){
+  let arr=[]; patients.forEach(p=>p.follows.forEach((f,i)=>{if(!f.done)arr.push({p,f,i})}));
+  arr.sort((a,b)=>a.f.date.localeCompare(b.f.date));
+  return arr;
+}
+function countStatus(text){return patients.filter(p=>p.status.includes(text)).length}
+function rowsForPatients(limit=999){
+  let q=(document.getElementById('globalSearch')?.value||'').toLowerCase();
+  let arr=patients.filter(p=>{
+    let ok=(activeFilter==='all'||p.status===activeFilter);
+    let hit=(p.name+p.phone+p.treatment+p.source).toLowerCase().includes(q);
+    return ok&&hit;
+  }).slice(0,limit);
+  return arr.map(p=>`<tr>
+    <td class="patient-cell"><b>${p.name}</b><small>${p.phone} • ${p.age||'-'} yaş</small></td>
+    <td>${p.treatment||'-'}<br><small style="color:var(--muted)">${p.price||''}</small></td>
+    <td>${p.source}</td><td>${p.consultant}</td><td>${badge(p.status)}</td>
+    <td><div class="action-row"><button class="small-btn wa" onclick="openWA(${p.id},'2 gün')">WhatsApp</button><button class="small-btn call" onclick="location.href='tel:${p.phone}'">Ara</button><button class="small-btn done" onclick="setStatus(${p.id},'Randevu aldı')">Randevu</button></div></td>
+  </tr>`).join('');
+}
+function barHTML(label,val,total){
+  let pct=total?Math.round(val/total*100):0;
+  return `<div class="bar-row"><b>${label}</b><div class="bar"><span style="width:${pct}%"></span></div><span>${val}</span></div>`;
+}
+function renderAll(){
+  let follows=allFollows(), due=follows.filter(x=>x.f.date<=todayISO()).length, appt=countStatus('Randevu')+countStatus('İşlem');
+  document.getElementById('stToday').innerText=patients.filter(p=>p.date===todayISO()).length;
+  document.getElementById('stFollow').innerText=follows.length;
+  document.getElementById('stDue').innerText=due;
+  document.getElementById('stAppt').innerText=appt;
+  document.getElementById('recentRows').innerHTML=rowsForPatients(5);
+  document.getElementById('patientRows').innerHTML=rowsForPatients();
+  document.getElementById('followRows').innerHTML=follows.map(x=>`<tr>
+    <td><b class="${x.f.date<=todayISO()?'':' '}">${x.f.date}</b></td>
+    <td class="patient-cell"><b>${x.p.name}</b><small>${x.p.phone}</small></td>
+    <td>${x.f.type}</td><td>${x.p.treatment}</td><td>${badge(x.p.status)}</td>
+    <td><div class="action-row"><button class="small-btn wa" onclick="openWA(${x.p.id},'${x.f.type}')">WhatsApp</button><button class="small-btn call" onclick="location.href='tel:${x.p.phone}'">Ara</button><button class="small-btn done" onclick="markDone(${x.p.id},${x.i})">Tamamlandı</button></div></td>
+  </tr>`).join('');
+  document.getElementById('todayList').innerHTML=follows.filter(x=>x.f.date<=todayISO()).slice(0,6).map(x=>`<div class="timeline-item"><div class="timeline-date">${x.f.date}</div><div><b>${x.p.name}</b><br><small style="color:var(--muted)">${x.f.type} • ${x.p.treatment}</small></div><button class="small-btn wa" onclick="openWA(${x.p.id},'${x.f.type}')">WhatsApp</button></div>`).join('') || '<div class="timeline-item"><div class="timeline-date">Bugün</div><div><b>Takip görevi yok</b><br><small style="color:var(--muted)">Yeni görüşme ekleyerek takip oluşturabilirsiniz.</small></div></div>';
+  let total=patients.length||1;
+  document.getElementById('resultBars').innerHTML=[
+    ['Randevu aldı',countStatus('Randevu')],['Düşünüyor',countStatus('Düşünüyor')],['Fiyat yüksek',countStatus('Fiyat')],['Bilgi eksikliği',countStatus('Bilgi')],['Takipte',countStatus('Takip')]
+  ].map(x=>barHTML(x[0],x[1],total)).join('');
+  document.getElementById('rpTotal').innerText=patients.length;
+  document.getElementById('rpRate').innerText=patients.length?Math.round(appt/patients.length*100)+'%':'0%';
+  document.getElementById('rpPrice').innerText=countStatus('Fiyat');
+  document.getElementById('rpInfo').innerText=countStatus('Bilgi');
+  let reasons={}; patients.forEach(p=>{reasons[p.lostReason||'Henüz belli değil']=(reasons[p.lostReason||'Henüz belli değil']||0)+1});
+  document.getElementById('lostBars').innerHTML=Object.entries(reasons).map(x=>barHTML(x[0],x[1],patients.length)).join('');
+  let treatments={}; patients.forEach(p=>{treatments[p.treatment||'Belirsiz']=(treatments[p.treatment||'Belirsiz']||0)+1});
+  document.getElementById('treatmentBars').innerHTML=Object.entries(treatments).map(x=>barHTML(x[0],x[1],patients.length)).join('');
+}
+function exportCSV(){
+  let header=['Ad Soyad','Telefon','İşlem','Kanal','Danışman','Durum','Kayıp Nedeni','Tarih','Not'];
+  let rows=patients.map(p=>[p.name,p.phone,p.treatment,p.source,p.consultant,p.status,p.lostReason,p.date,p.note]);
+  let csv=[header,...rows].map(r=>r.map(v=>`"${String(v||'').replaceAll('"','""')}"`).join(';')).join('\n');
+  let blob=new Blob(["\ufeff"+csv],{type:'text/csv;charset=utf-8;'});
+  let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mery-estetik-hasta-takip.csv'; a.click();
+}
+function resetDemo(){localStorage.removeItem('meryProPatients');patients=[];seed();renderAll();}
+function seed(){
+  if(patients.length) return;
+  patients=[
+    {id:101,name:'Ayşe Yılmaz',phone:'905551111111',age:'34',gender:'Kadın',source:'Instagram',consultant:'Mery Danışman',treatment:'Botoks',price:'8.000 TL',rx:'3 bölge botoks planlandı.',note:'Eşine danışacak.',status:'Düşünüyor',lostReason:'Ailesine/eşine danışacak',date:todayISO(),follows:[{date:todayISO(),type:'2 gün sonra takip',done:false},{date:addDays(5),type:'1 hafta sonra takip',done:false},{date:addDays(28),type:'1 ay sonra takip',done:false}]},
+    {id:102,name:'Buse Korkmaz',phone:'905552222222',age:'29',gender:'Kadın',source:'Google',consultant:'Mery Danışman',treatment:'Lazer Epilasyon',price:'',rx:'Splendor X seans planı önerildi.',note:'Fiyatı değerlendirecek.',status:'Fiyat yüksek geldi',lostReason:'Fiyat yüksek geldi',date:todayISO(),follows:[{date:todayISO(),type:'2 gün sonra takip',done:false},{date:addDays(7),type:'1 hafta sonra takip',done:false},{date:addDays(30),type:'1 ay sonra takip',done:false}]},
+    {id:103,name:'Merve Kaya',phone:'905553333333',age:'41',gender:'Kadın',source:'WhatsApp',consultant:'Mery Danışman',treatment:'Endolift',price:'',rx:'Gıdı ve jawline Endolift önerildi.',note:'Randevu oluşturuldu.',status:'Randevu aldı',lostReason:'Henüz belli değil',date:todayISO(),follows:[{date:addDays(2),type:'2 gün sonra takip',done:false},{date:addDays(7),type:'1 hafta sonra takip',done:false},{date:addDays(30),type:'1 ay sonra takip',done:false}]},
+    {id:104,name:'Selin Aksoy',phone:'905554444444',age:'37',gender:'Kadın',source:'Referans',consultant:'Mery Danışman',treatment:'Cilt Bakımı',price:'',rx:'Visia analizi sonrası bakım protokolü.',note:'Detaylı bilgi istedi.',status:'Bilgi eksikliği',lostReason:'Yeterli bilgi alamadı',date:addDays(-1),follows:[{date:todayISO(),type:'2 gün sonra takip',done:false},{date:addDays(6),type:'1 hafta sonra takip',done:false},{date:addDays(29),type:'1 ay sonra takip',done:false}]}
+  ];
+  save();
+}
+</script>
+</body>
+</html>
